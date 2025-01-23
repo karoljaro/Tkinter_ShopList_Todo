@@ -4,11 +4,11 @@ from layout import Body_layout
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
+        self._set_appearance_mode("dark")
 
         # create and config window
         self.create_window()
-        self.frame = Body_layout(self)
-        self.frame.place(relx=0.5, rely=0.5, anchor="center")
+        Body_layout(self).place(relx=0.5, rely=0.5, anchor="center")
 
         # run app
         self.mainloop()
