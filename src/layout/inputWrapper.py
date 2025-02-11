@@ -19,7 +19,7 @@ class InputWrapper(ttk.Frame):
         self.quantity_var.trace_add("write", self.inputValid)
 
         ListEntry(self, textvariable=self.entry_var).grid(column=0, row=0, sticky="news", padx=(0, 10))
-        QuantityEntry(self, width=150, step_size=1).grid(column=1, row=0, sticky="news", padx=(0,10))
+        # QuantityEntry(self, width=150, step_size=1).grid(column=1, row=0, sticky="news", padx=(0,10))
         
         self.submit_btn = SubmitBtn(self)
         self.submit_btn.grid(column=2, row=0)
