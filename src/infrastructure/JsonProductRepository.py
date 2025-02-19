@@ -1,4 +1,5 @@
 import json
+import os
 from typing import List, Optional
 from src.application.repositories.IProductRepository import IProductRepository
 from src.domain.Product_Entity import _Product
@@ -6,7 +7,14 @@ from src.domain.Product_Entity import _Product
 class JsonProductRepository(IProductRepository):
     def __init__(self, file_path: str) -> None:
         self.file_path = file_path
+        self.__ensure_file_exists()
         self.__load_products()
+
+    def __ensure_file_exists(self) -> None:
+        os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
+        if not os.path.exists(self.file_path):
+            with open(self.file_path, 'w') as file:
+                json.dump([], file)
 
     def __load_products(self) -> None:
         try:
