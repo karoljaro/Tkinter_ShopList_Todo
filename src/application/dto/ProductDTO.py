@@ -5,6 +5,7 @@ class ProductDTO(BaseModel):
     id: Optional[str] = None
     name: str
     quantity: int
+    purchased: Optional[bool] = False
 
     @field_validator('quantity')
     def quantity_must_be_positive(cls, v):

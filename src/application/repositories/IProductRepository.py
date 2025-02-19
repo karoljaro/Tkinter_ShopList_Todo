@@ -18,3 +18,7 @@ class IProductRepository(ABC):
     @abstractmethod
     def get_product_by_id(self, product_id: str) -> Optional[_Product]:
         pass
+
+    @abstractmethod
+    def update_product(self, product: _Product) -> None:
+        pass
