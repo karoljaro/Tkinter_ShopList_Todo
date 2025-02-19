@@ -20,7 +20,11 @@ class JsonProductRepository(IProductRepository):
         try:
             with open(self.file_path, "r") as file:
                 products_data = json.load(file)
-                self.__products = [_Product(**data) for data in products_data]
+                self.__products = []
+                for data in products_data:
+                    product = _Product(name=data['name'], quantity=data['quantity'], id=data['id'])
+                    product.purchased = data['_purchased']
+                    self.__products.append(product)
         except FileNotFoundError:
             self.__products = []
 

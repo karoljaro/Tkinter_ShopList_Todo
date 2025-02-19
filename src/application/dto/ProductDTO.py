@@ -1,11 +1,11 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, Field
 from typing import Optional
 
 class ProductDTO(BaseModel):
     id: Optional[str] = None
     name: str
     quantity: int
-    purchased: Optional[bool] = False
+    purchased: Optional[bool] = Field(default=False)
 
     @field_validator('quantity')
     def quantity_must_be_positive(cls, v):

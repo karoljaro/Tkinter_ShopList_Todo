@@ -19,8 +19,8 @@ class ProductController:
         self.update_product_use_case = UpdateProduct(self.product_repository)
 
     @handle_exceptions
-    def add_product(self, name: str, quantity: int) -> _Product:
-        product_dto = ProductDTO(name=name, quantity=quantity)
+    def add_product(self, name: str, quantity: int, purchased: bool = False) -> _Product:
+        product_dto = ProductDTO(name=name, quantity=quantity, purchased=purchased)
         return self.add_product_use_case.execute(product_dto)
 
     @handle_exceptions
