@@ -14,13 +14,15 @@ def product_controller(product_repository):
 def test_add_product(product_controller, product_repository):
     name = "Test Product"
     quantity = 10
+    purchased = True
     
     # Call the method
-    result = product_controller.add_product(name, quantity)
+    result = product_controller.add_product(name, quantity, purchased)
     
     # Assertions
     assert result.name == name
     assert result.quantity == quantity
+    assert result.purchased == purchased
     assert product_repository.get_product_by_id(result.id) is not None
 
 def test_get_all_products(product_controller, product_repository):

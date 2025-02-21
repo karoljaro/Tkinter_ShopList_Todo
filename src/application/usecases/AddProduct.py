@@ -9,6 +9,11 @@ class AddProduct:
     def execute(self, product_dto: ProductDTO) -> _Product:
         if product_dto.id and self.__productRepository.get_product_by_id(product_dto.id):
             raise ValueError(f"Product with id {product_dto.id} already exists.")
-        product = _Product(product_dto.name, product_dto.quantity, product_dto.id)
+        product = _Product(
+            id=product_dto.id,
+            name=product_dto.name,
+            quantity=product_dto.quantity,
+            purchased=product_dto.purchased
+        )
         self.__productRepository.add_product(product)
         return product

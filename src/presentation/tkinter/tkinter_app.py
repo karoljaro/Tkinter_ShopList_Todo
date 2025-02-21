@@ -19,7 +19,7 @@ class TkinterApp:
         self.quantity_entry.pack(pady=5)
 
         self.purchased_var = ctk.BooleanVar()
-        self.purchased_check = ctk.CTkCheckBox(root,text="Purchased", variable=self.purchased_var)
+        self.purchased_check = ctk.CTkCheckBox(root, variable=self.purchased_var)
         self.purchased_check.pack(pady=5)
 
         self.add_button = ctk.CTkButton(root, text="Add Product", command=self.add_product)

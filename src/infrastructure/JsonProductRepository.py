@@ -1,8 +1,8 @@
 import json
 import os
-from typing import List, Optional
-from src.application.repositories.IProductRepository import IProductRepository
 from src.domain.Product_Entity import _Product
+from src.application.repositories.IProductRepository import IProductRepository
+from typing import Optional
 
 class JsonProductRepository(IProductRepository):
     def __init__(self, file_path: str) -> None:
@@ -22,8 +22,12 @@ class JsonProductRepository(IProductRepository):
                 products_data = json.load(file)
                 self.__products = []
                 for data in products_data:
-                    product = _Product(name=data['name'], quantity=data['quantity'], id=data['id'])
-                    product.purchased = data['_purchased']
+                    product = _Product(
+                        id=data['id'],
+                        name=data['name'],
+                        quantity=data['quantity'],
+                        purchased=data.get('purchased', False)
+                    )
                     self.__products.append(product)
         except FileNotFoundError:
             self.__products = []
@@ -38,7 +42,7 @@ class JsonProductRepository(IProductRepository):
         self.__products.append(product)
         self.__save_products()
 
-    def get_all_products(self) -> List[_Product]:
+    def get_all_products(self) -> list[_Product]:
         return self.__products
 
     def remove_product(self, product_id: str) -> None:
@@ -55,9 +59,10 @@ class JsonProductRepository(IProductRepository):
         return None
 
     def update_product(self, product: _Product) -> None:
-        for i, p in enumerate(self.__products):
-            if p.id == product.id:
-                self.__products[i] = product
-                self.__save_products()
-                return
-        raise ValueError(f"Product with id {product.id} does not exist.")
+        existing_product = self.get_product_by_id(product.id)
+        if existing_product is None:
+            raise ValueError(f"Product with id {product.id} does not exist.")
+        existing_product.name = product.name
+        existing_product.quantity = product.quantity
+        existing_product.purchased = product.purchased
+        self.__save_products()
