@@ -18,10 +18,8 @@ class TkinterApp:
         self.quantity_entry = ctk.CTkEntry(root)
         self.quantity_entry.pack(pady=5)
 
-        self.purchased_label = ctk.CTkLabel(root, text="Purchased")
-        self.purchased_label.pack(pady=5)
         self.purchased_var = ctk.BooleanVar()
-        self.purchased_check = ctk.CTkCheckBox(root, variable=self.purchased_var)
+        self.purchased_check = ctk.CTkCheckBox(root,text="Purchased", variable=self.purchased_var)
         self.purchased_check.pack(pady=5)
 
         self.add_button = ctk.CTkButton(root, text="Add Product", command=self.add_product)
@@ -33,20 +31,31 @@ class TkinterApp:
         self.remove_button = ctk.CTkButton(root, text="Remove Product", command=self.remove_product)
         self.remove_button.pack(pady=5)
 
-        self.list_button = ctk.CTkButton(root, text="List Products", command=self.list_products)
-        self.list_button.pack(pady=5)
-
         self.product_list = CTkListbox(root, width=400, command=self.on_product_select)
         self.product_list.pack(pady=5)
 
         self.selected_product_id = None
+
+        # Refresh product list on startup
+        self.refresh_product_list()
 
     def on_product_select(self, selected_option):
         self.selected_product_id = selected_option.split()[0]
 
     def add_product(self):
         name = self.name_entry.get()
-        quantity = int(self.quantity_entry.get())
+        quantity = self.quantity_entry.get()
+        if not name:
+            messagebox.showerror("Error", "Name field is empty")
+            return
+        if not quantity:
+            messagebox.showerror("Error", "Quantity field is empty")
+            return
+        try:
+            quantity = int(quantity)
+        except ValueError:
+            messagebox.showerror("Error", "Quantity must be an integer")
+            return
         purchased = self.purchased_var.get()
         try:
             product = self.product_controller.add_product(name, quantity, purchased)
@@ -60,7 +69,18 @@ class TkinterApp:
             messagebox.showerror("Error", "No product selected")
             return
         name = self.name_entry.get()
-        quantity = int(self.quantity_entry.get())
+        quantity = self.quantity_entry.get()
+        if not name:
+            messagebox.showerror("Error", "Name field is empty")
+            return
+        if not quantity:
+            messagebox.showerror("Error", "Quantity field is empty")
+            return
+        try:
+            quantity = int(quantity)
+        except ValueError:
+            messagebox.showerror("Error", "Quantity must be an integer")
+            return
         purchased = self.purchased_var.get()
         try:
             product = self.product_controller.update_product(self.selected_product_id, name, quantity, purchased)
@@ -79,9 +99,6 @@ class TkinterApp:
             self.refresh_product_list()
         except ValueError as e:
             messagebox.showerror("Error", str(e))
-
-    def list_products(self):
-        self.refresh_product_list()
 
     def refresh_product_list(self):
         self.product_list.delete(0, ctk.END)
