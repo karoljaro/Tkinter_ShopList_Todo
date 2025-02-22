@@ -1,6 +1,6 @@
 import customtkinter as ctk  # type: ignore
 from tkinter import messagebox
-from CTkListbox import CTkListbox  # type: ignore
+from src.presentation.widgets.ctk_listbox import CTkListbox
 
 class TkinterApp:
     def __init__(self, root, product_controller) -> None:
@@ -40,16 +40,24 @@ class TkinterApp:
         self.refresh_product_list()
 
     def on_product_select(self, selected_option):
-        self.selected_product_id = selected_option.split()[0]
-        product = self.product_controller.get_product_by_id(self.selected_product_id)
-        if product:
-            self.name_entry.delete(0, ctk.END)
-            self.name_entry.insert(0, product.name)
-            self.quantity_entry.delete(0, ctk.END)
-            self.quantity_entry.insert(0, product.quantity)
-            self.purchased_var.set(product.purchased)
-            self.update_button.configure(state=ctk.NORMAL)
-            self.remove_button.configure(state=ctk.NORMAL)
+        selected_id = selected_option.split()[0]
+        if self.selected_product_id == selected_id:
+            # Odznacz element
+            self.selected_product_id = None
+            self.clear_inputs()
+            self.product_list.deselect_all()  # Resetuj zaznaczenie w liście
+        else:
+            # Zaznacz nowy element
+            self.selected_product_id = selected_id
+            product = self.product_controller.get_product_by_id(self.selected_product_id)
+            if product:
+                self.name_entry.delete(0, ctk.END)
+                self.name_entry.insert(0, product.name)
+                self.quantity_entry.delete(0, ctk.END)
+                self.quantity_entry.insert(0, product.quantity)
+                self.purchased_var.set(product.purchased)
+                self.update_button.configure(state=ctk.NORMAL)
+                self.remove_button.configure(state=ctk.NORMAL)
 
     def add_product(self):
         name = self.name_entry.get()
