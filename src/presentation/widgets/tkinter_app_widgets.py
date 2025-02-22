@@ -1,12 +1,12 @@
 import customtkinter as ctk  # type: ignore
 from tkinter import messagebox
 from src.presentation.widgets.ctk_listbox import CTkListbox
+from src.utils.purchaseStatus import get_purchase_status
 
 class TkinterApp:
     def __init__(self, root, product_controller) -> None:
         self.root = root
         self.product_controller = product_controller
-        self.root.title("Product Management")
 
         self.name_label = ctk.CTkLabel(root, text="Name")
         self.name_label.pack(pady=5)
@@ -35,12 +35,14 @@ class TkinterApp:
         self.product_list.pack(pady=5)
 
         self.selected_product_id = None
+        self.product_map = {}  # Słownik do mapowania wyświetlanych wartości na ID produktów
 
         # Refresh product list on startup
         self.refresh_product_list()
 
     def on_product_select(self, selected_option):
-        selected_id = selected_option.split()[0]
+        selected_value = selected_option
+        selected_id = self.product_map.get(selected_value)
         if self.selected_product_id == selected_id:
             # Odznacz element
             self.selected_product_id = None
@@ -122,9 +124,13 @@ class TkinterApp:
 
     def refresh_product_list(self):
         self.product_list.delete(0, ctk.END)
+        self.product_map.clear()  # Wyczyść mapowanie
         products = self.product_controller.get_all_products()
         for product in products:
-            self.product_list.insert(ctk.END, f"{product.id} {product.name} {product.quantity} {product.purchased}")
+            purchase_status = get_purchase_status(product.purchased)
+            display_value = f"- Name: {product.name} | Quantity: {product.quantity} | Status: {purchase_status}"
+            self.product_list.insert(ctk.END, display_value)
+            self.product_map[display_value] = product.id  # Mapuj wyświetlaną wartość na ID produktu
         self.selected_product_id = None
         self.update_button.configure(state=ctk.DISABLED)
         self.remove_button.configure(state=ctk.DISABLED)
