@@ -31,7 +31,7 @@ class TkinterApp:
         self.remove_button = ctk.CTkButton(root, text="Remove Product", command=self.remove_product, state=ctk.DISABLED)
         self.remove_button.pack(pady=5)
 
-        self.product_list = CTkListbox(root, width=400, command=self.on_product_select)
+        self.product_list = CTkListbox(root, width=400, height=300, command=self.on_product_select)
         self.product_list.pack(pady=5)
 
         self.selected_product_id = None
