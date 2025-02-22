@@ -70,3 +70,18 @@ def test_remove_product(product_controller, product_repository):
     
     # Assertions
     assert product_repository.get_product_by_id(product_id) is None
+
+def test_update_product(product_controller, product_repository):
+    product_id = "test_id"
+    product = _Product(name="Test Product", quantity=10, id=product_id)
+    
+    # Add product directly to the repository
+    product_repository.add_product(product)
+    
+    # Call the method
+    updated_product = product_controller.update_product(product_id, "Updated Product", 20, False)
+    
+    # Assertions
+    assert updated_product.name == "Updated Product"
+    assert updated_product.quantity == 20
+    assert not updated_product.purchased

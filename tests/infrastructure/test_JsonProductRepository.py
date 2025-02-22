@@ -1,11 +1,36 @@
 import pytest
 from src.infrastructure.JsonProductRepository import JsonProductRepository
 from src.domain.Product_Entity import _Product
+import json
 
 @pytest.fixture
 def product_repository(tmp_path):
     file_path = tmp_path / "products.json"
     return JsonProductRepository(file_path)
+
+def test_ensure_file_exists(product_repository, tmp_path):
+    file_path = tmp_path / "products.json"
+    assert file_path.exists()
+
+def test_load_products(product_repository, tmp_path):
+    product = _Product(name="Test Product", quantity=10, purchased=True)
+    product_repository.add_product(product)
+    
+    # Reinitialize the repository to simulate loading from file
+    new_product_repository = JsonProductRepository(product_repository.file_path)
+    
+    assert len(new_product_repository.get_all_products()) == 1
+    assert new_product_repository.get_all_products()[0].name == "Test Product"
+    assert new_product_repository.get_all_products()[0].quantity == 10
+    assert new_product_repository.get_all_products()[0].purchased == True
+
+def test_save_products(product_repository):
+    product = _Product(name="Test Product", quantity=10, purchased=True)
+    product_repository.add_product(product)
+    with open(product_repository.file_path, "r") as file:
+        products_data = json.load(file)
+    assert len(products_data) == 1
+    assert products_data[0]["name"] == "Test Product"
 
 def test_add_product(product_repository):
     product = _Product(name="Test Product", quantity=10, purchased=True)
