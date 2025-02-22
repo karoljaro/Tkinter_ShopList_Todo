@@ -19,7 +19,7 @@ class TkinterApp:
         self.quantity_entry.pack(pady=5)
 
         self.purchased_var = ctk.BooleanVar()
-        self.purchased_check = ctk.CTkCheckBox(root, text="Purchased",variable=self.purchased_var)
+        self.purchased_check = ctk.CTkCheckBox(root, text="Purchased", variable=self.purchased_var)
         self.purchased_check.pack(pady=5)
 
         self.add_button = ctk.CTkButton(root, text="Add Product", command=self.add_product)
@@ -41,6 +41,13 @@ class TkinterApp:
 
     def on_product_select(self, selected_option):
         self.selected_product_id = selected_option.split()[0]
+        product = self.product_controller.get_product_by_id(self.selected_product_id)
+        if product:
+            self.name_entry.delete(0, ctk.END)
+            self.name_entry.insert(0, product.name)
+            self.quantity_entry.delete(0, ctk.END)
+            self.quantity_entry.insert(0, product.quantity)
+            self.purchased_var.set(product.purchased)
 
     def add_product(self):
         name = self.name_entry.get()
@@ -61,6 +68,7 @@ class TkinterApp:
             product = self.product_controller.add_product(name, quantity, purchased)
             messagebox.showinfo("Success", f"Product {product.name} added successfully!")
             self.refresh_product_list()
+            self.clear_inputs()
         except ValueError as e:
             messagebox.showerror("Error", str(e))
 
@@ -86,6 +94,7 @@ class TkinterApp:
             product = self.product_controller.update_product(self.selected_product_id, name, quantity, purchased)
             messagebox.showinfo("Success", f"Product {product.name} updated successfully!")
             self.refresh_product_list()
+            self.clear_inputs()
         except ValueError as e:
             messagebox.showerror("Error", str(e))
 
@@ -97,6 +106,7 @@ class TkinterApp:
             self.product_controller.remove_product(self.selected_product_id)
             messagebox.showinfo("Success", "Product removed successfully!")
             self.refresh_product_list()
+            self.clear_inputs()
         except ValueError as e:
             messagebox.showerror("Error", str(e))
 
@@ -106,3 +116,8 @@ class TkinterApp:
         for product in products:
             self.product_list.insert(ctk.END, f"{product.id} {product.name} {product.quantity} {product.purchased}")
         self.selected_product_id = None
+
+    def clear_inputs(self):
+        self.name_entry.delete(0, ctk.END)
+        self.quantity_entry.delete(0, ctk.END)
+        self.purchased_var.set(False)
