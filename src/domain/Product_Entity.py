@@ -7,13 +7,3 @@ class _Product:
         self.name: str = name
         self.quantity: int = quantity
         self.purchased: bool = purchased
-
-    @property
-    def status(self) -> Literal['kupione', 'niekupione']:
-        return "kupione" if self.purchased else "niekupione"
-
-    def purchase(self) -> None:
-        self.purchased = True
-
-    def unpurchase(self) -> None:
-        self.purchased = False
