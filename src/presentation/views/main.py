@@ -1,5 +1,5 @@
 import customtkinter as ctk # type: ignore
-from src.presentation.tkinter.tkinter_app import TkinterApp
+from src.presentation.widgets.tkinter_app_widgets import TkinterApp
 from src.presentation.controllers.ProductController import ProductController
 from src.infrastructure.JsonProductRepository import JsonProductRepository
 
