@@ -4,7 +4,16 @@ from src.presentation.widgets.ctk_listbox import CTkListbox
 from src.utils.purchaseStatus import get_purchase_status
 
 class TkinterApp:
+    """
+    Main application class for the Tkinter-based shopping list and todo app.
+    """
     def __init__(self, root, product_controller) -> None:
+        """
+        Initialize the TkinterApp with the root window and product controller.
+
+        :param root: The root window of the Tkinter application.
+        :param product_controller: The controller for managing products.
+        """
         self.root = root
         self.product_controller = product_controller
 
@@ -58,6 +67,11 @@ class TkinterApp:
         self.refresh_product_list()
 
     def on_product_select(self, selected_option):
+        """
+        Handle the selection of a product from the list.
+
+        :param selected_option: The selected product option.
+        """
         selected_value = selected_option
         selected_id = self.product_map.get(selected_value)
         if self.selected_product_id == selected_id:
@@ -79,6 +93,9 @@ class TkinterApp:
                 self.remove_button.configure(state=ctk.NORMAL)
 
     def add_product(self):
+        """
+        Add a new product to the list.
+        """
         name = self.name_entry.get()
         quantity = self.quantity_entry.get()
         if not name:
@@ -104,6 +121,9 @@ class TkinterApp:
             messagebox.showerror("Error", str(e))
 
     def update_product(self):
+        """
+        Update the selected product in the list.
+        """
         if not self.selected_product_id:
             messagebox.showerror("Error", "No product selected")
             return
@@ -132,6 +152,9 @@ class TkinterApp:
             messagebox.showerror("Error", str(e))
 
     def remove_product(self):
+        """
+        Remove the selected product from the list.
+        """
         if not self.selected_product_id:
             messagebox.showerror("Error", "No product selected")
             return
@@ -144,6 +167,9 @@ class TkinterApp:
             messagebox.showerror("Error", str(e))
 
     def refresh_product_list(self):
+        """
+        Refresh the product list displayed in the UI.
+        """
         self.product_list.delete(0, ctk.END)
         self.product_map.clear()  # Wyczyść mapowanie
         products = self.product_controller.get_all_products()
@@ -158,6 +184,9 @@ class TkinterApp:
         self.remove_button.configure(state=ctk.DISABLED)
 
     def clear_inputs(self):
+        """
+        Clear the input fields in the UI.
+        """
         self.name_entry.delete(0, ctk.END)
         self.quantity_entry.delete(0, ctk.END)
         self.purchased_var.set(False)
