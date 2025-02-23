@@ -14,7 +14,12 @@ class MainApp(ctk.CTk):
         """
         super().__init__()
         self.title("Product Management")
-        self.minsize(640, 600)
+
+        # Define window dimensions
+        self.width = 640
+        self.height = 600
+
+        self.minsize(self.width, self.height)
 
         # Set the application icon
         icon_path = os.path.join(os.path.dirname(__file__), '../../../assets/icon.ico')
@@ -29,6 +34,20 @@ class MainApp(ctk.CTk):
 
         # Initialize the TkinterApp with the root window and product controller
         self.app = TkinterApp(self, self.product_controller)
+
+        # Center the window on the screen
+        self.center_window()
+
+    def center_window(self):
+        """
+        Center the window on the screen.
+        """
+        self.update_idletasks()
+        width = self.width
+        height = self.height
+        x = (self.winfo_screenwidth() // 2) - (width // 2)
+        y = (self.winfo_screenheight() // 2) - (height // 2)
+        self.geometry(f'{width}x{height}+{int(x)}+{int(y)}')
 
     def run(self):
         """
