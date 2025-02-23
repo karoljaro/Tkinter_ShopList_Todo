@@ -7,7 +7,7 @@ class MainApp(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title("Product Management")
-        self.minsize(460, 600)
+        self.minsize(640, 600)
 
         self.product_repository = JsonProductRepository('../../infrastructure/data/products.json')
         self.product_controller = ProductController(self.product_repository)

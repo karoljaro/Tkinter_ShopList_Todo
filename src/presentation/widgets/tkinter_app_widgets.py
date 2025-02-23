@@ -8,30 +8,47 @@ class TkinterApp:
         self.root = root
         self.product_controller = product_controller
 
-        self.name_label = ctk.CTkLabel(root, text="Name")
-        self.name_label.pack(pady=5)
-        self.name_entry = ctk.CTkEntry(root)
-        self.name_entry.pack(pady=5)
+        # Create a main frame to center the content
+        main_frame = ctk.CTkFrame(root, fg_color="#242424")
+        main_frame.place(relx=0.5, rely=0.5, anchor="center")
 
-        self.quantity_label = ctk.CTkLabel(root, text="Quantity")
-        self.quantity_label.pack(pady=5)
-        self.quantity_entry = ctk.CTkEntry(root)
-        self.quantity_entry.pack(pady=5)
+        # Create a frame for the input fields and labels
+        input_frame = ctk.CTkFrame(main_frame, fg_color="#242424")
+        input_frame.pack(pady=10)
 
+        # Name label and entry
+        self.name_label = ctk.CTkLabel(input_frame, text="Name")
+        self.name_label.grid(row=0, column=0, padx=5, pady=5)
+        self.name_entry = ctk.CTkEntry(input_frame, width=300)
+        self.name_entry.grid(row=1, column=0, padx=5, pady=5)
+
+        # Quantity label and entry
+        self.quantity_label = ctk.CTkLabel(input_frame, text="Quantity")
+        self.quantity_label.grid(row=0, column=1, padx=5, pady=5)
+        self.quantity_entry = ctk.CTkEntry(input_frame)
+        self.quantity_entry.grid(row=1, column=1, padx=5, pady=5)
+
+        # Purchased checkbox
         self.purchased_var = ctk.BooleanVar()
-        self.purchased_check = ctk.CTkCheckBox(root, text="Purchased", variable=self.purchased_var)
+        self.purchased_check = ctk.CTkCheckBox(main_frame, text="Purchased", variable=self.purchased_var)
         self.purchased_check.pack(pady=10)
 
-        self.add_button = ctk.CTkButton(root, text="Add Product", command=self.add_product)
-        self.add_button.pack(pady=5)
+        # Create a frame for the buttons
+        button_frame = ctk.CTkFrame(main_frame, fg_color="#242424")
+        button_frame.pack(pady=10)
 
-        self.update_button = ctk.CTkButton(root, text="Update Product", command=self.update_product, state=ctk.DISABLED)
-        self.update_button.pack(pady=5)
+        # Add, Update, and Remove buttons
+        self.add_button = ctk.CTkButton(button_frame, text="Add Product", command=self.add_product)
+        self.add_button.grid(row=0, column=0, padx=5, pady=5)
 
-        self.remove_button = ctk.CTkButton(root, text="Remove Product", command=self.remove_product, state=ctk.DISABLED)
-        self.remove_button.pack(pady=5)
+        self.update_button = ctk.CTkButton(button_frame, text="Update Product", command=self.update_product, state=ctk.DISABLED)
+        self.update_button.grid(row=0, column=1, padx=5, pady=5)
 
-        self.product_list = CTkListbox(root, width=400, height=300, command=self.on_product_select)
+        self.remove_button = ctk.CTkButton(button_frame, text="Remove Product", command=self.remove_product, state=ctk.DISABLED)
+        self.remove_button.grid(row=0, column=2, padx=5, pady=5)
+
+        # Product list
+        self.product_list = CTkListbox(main_frame, width=600, height=300, command=self.on_product_select)
         self.product_list.pack(pady=5)
 
         self.selected_product_id = None
@@ -72,8 +89,10 @@ class TkinterApp:
             return
         try:
             quantity = int(quantity)
+            if quantity <= 0:
+                raise ValueError("Quantity must be greater than zero")
         except ValueError:
-            messagebox.showerror("Error", "Quantity must be an integer")
+            messagebox.showerror("Error", "Quantity must be a positive integer")
             return
         purchased = self.purchased_var.get()
         try:
@@ -98,8 +117,10 @@ class TkinterApp:
             return
         try:
             quantity = int(quantity)
+            if quantity <= 0:
+                raise ValueError("Quantity must be greater than zero")
         except ValueError:
-            messagebox.showerror("Error", "Quantity must be an integer")
+            messagebox.showerror("Error", "Quantity must be a positive integer")
             return
         purchased = self.purchased_var.get()
         try:
@@ -128,7 +149,8 @@ class TkinterApp:
         products = self.product_controller.get_all_products()
         for product in products:
             purchase_status = get_purchase_status(product.purchased)
-            display_value = f"- Name: {product.name} | Quantity: {product.quantity} | Status: {purchase_status}"
+            name_display = product.name if len(product.name) <= 40 else product.name[:40] + "..."
+            display_value = f"- Name: {name_display} | Quantity: {product.quantity} | Status: {purchase_status}"
             self.product_list.insert(ctk.END, display_value)
             self.product_map[display_value] = product.id  # Mapuj wyświetlaną wartość na ID produktu
         self.selected_product_id = None
