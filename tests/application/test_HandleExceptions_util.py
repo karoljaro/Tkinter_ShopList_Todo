@@ -1,5 +1,5 @@
 import pytest
-from src.application.utils.errorHandlerDecorator import handle_exceptions
+from src.utils.errorHandlerDecorator import handle_exceptions
 
 @handle_exceptions
 def function_that_raises():

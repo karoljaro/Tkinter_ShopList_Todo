@@ -5,7 +5,7 @@ from src.application.usecases.RemoveProduct import RemoveProduct
 from src.application.usecases.UpdateProduct import UpdateProduct
 from src.application.repositories.IProductRepository import IProductRepository
 from src.application.dto.ProductDTO import ProductDTO
-from src.application.utils.errorHandlerDecorator import handle_exceptions
+from src.utils.errorHandlerDecorator import handle_exceptions
 from src.domain.Product_Entity import _Product
 from src.infrastructure.InMemoryProductRepository import InMemoryProductRepository
 
