@@ -104,7 +104,11 @@ Architektura Clean Architecture została wybrana, aby oddzielić logikę bizneso
 Aby stworzyć wirtualne środowisko, uruchom poniższe polecenie:
 
 ```bash
-python -m venv venv
+py -m venv venv
+```
+lub
+```bash
+python3 -m venv venv
 ```
 
 ### Instalacja zależności
@@ -128,7 +132,11 @@ pytest
 Aby uruchomić program, wykonaj poniższe polecenie w katalogu głównym projektu:
 
 ```bash
-python src/presentation/views/main.py
+py src/presentation/views/main.py
+```
+lub
+```bash
+python3 src/presentation/views/main.py
 ```
 
 ## Jak korzystać z programu
