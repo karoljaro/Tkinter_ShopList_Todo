@@ -15,7 +15,7 @@ class JsonProductRepository(IProductRepository):
 
         :param file_path: Path to the JSON file storing product data.
         """
-        self.file_path = file_path
+        self.file_path = os.path.abspath(file_path)
         self.__ensure_file_exists()
         self.__load_products()
 

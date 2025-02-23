@@ -2,6 +2,7 @@ import customtkinter as ctk  # type: ignore
 from src.presentation.widgets.tkinter_app_widgets import TkinterApp
 from src.presentation.controllers.ProductController import ProductController
 from src.infrastructure.JsonProductRepository import JsonProductRepository
+import os
 
 class MainApp(ctk.CTk):
     """
@@ -16,7 +17,8 @@ class MainApp(ctk.CTk):
         self.minsize(640, 600)
 
         # Initialize the JSON product repository
-        self.product_repository = JsonProductRepository('../../infrastructure/data/products.json')
+        file_path = os.path.join(os.path.dirname(__file__), '../../infrastructure/data/products.json')
+        self.product_repository = JsonProductRepository(file_path)
 
         # Initialize the product controller
         self.product_controller = ProductController(self.product_repository)
