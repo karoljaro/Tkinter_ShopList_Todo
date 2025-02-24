@@ -2,7 +2,7 @@
 
 ## Opis projektu
 
-Celem projektu jest stworzenie aplikacji do zarządzania listą zakupów z wykorzystaniem biblioteki Tkinter. Aplikacja pozwala na dodawanie, edytowanie oraz usuwanie produktów z listy. Użytkownik może także zaznaczać produkty jako kupione lub odznaczać je.
+Celem projektu jest stworzenie aplikacji do zarządzania listą zakupów z wykorzystaniem biblioteki Tkinter. Aplikacja pozwala na dodawanie, edytowanie oraz usuwanie produktów z listy. Użytkownik ma również możliwość zaznaczania produktów jako kupione.
 
 Zakres projektu obejmuje:
 - Tworzenie listy zakupów
@@ -99,16 +99,45 @@ Architektura Clean Architecture została wybrana, aby oddzielić logikę bizneso
 
 ## Instalacja
 
+> [!IMPORTANT] 
+> Przed instalacją upewnij się, że masz zainstalowanego Pythona w wersji 3.13 lub wyższej.
+
+Możesz to sprawdzić, uruchamiając poniższe polecenie:
+
+```bash
+# Windows/macOS/Linux
+py --version
+
+# lub
+
+python3 --version
+```
+
 ### Tworzenie wirtualnego środowiska
 
 Aby stworzyć wirtualne środowisko, uruchom poniższe polecenie:
 
 ```bash
+# Windows/macOS/Linux
 py -m venv venv
-```
-lub
-```bash
+
+# lub
+
 python3 -m venv venv
+```
+
+### Aktywacja wirtualnego środowiska
+
+Po utworzeniu wirtualnego środowiska, aktywuj je:
+
+#### Windows:
+```bash
+venv\Scripts\activate
+```
+
+#### macOS/Linux:
+```bash
+source venv/bin/activate
 ```
 
 ### Instalacja zależności
@@ -132,10 +161,11 @@ pytest
 Aby uruchomić program, wykonaj poniższe polecenie w katalogu głównym projektu:
 
 ```bash
+# Windows/macOS/Linux
 py src/presentation/views/main.py
-```
-lub
-```bash
+
+# lub
+
 python3 src/presentation/views/main.py
 ```
 
@@ -159,5 +189,5 @@ python3 src/presentation/views/main.py
    - Kliknij na produkt na liście, aby go zaznaczyć.
    - Kliknij ponownie na ten sam produkt, aby go odznaczyć.
 
-> [!NOTE] 
+> [!NOTE]
 > Pamiętaj o spełnieniu wymagań dotyczących dodawania oraz aktualizacji produktów.
