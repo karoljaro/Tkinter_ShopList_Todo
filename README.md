@@ -103,10 +103,20 @@ Architektura Clean Architecture została wybrana, aby oddzielić logikę bizneso
 
 ## Instalacja
 
+### Pobieranie i wypakowywanie projektu
+
+Po pobraniu i wypakowaniu projektu, przejdź do folderu z projektem:
+
+```bash
+cd Tkinter_ShopList_Todo
+```
+
+### Sprawdzenie wersji Pythona
+
 > [!IMPORTANT] 
 > Przed instalacją upewnij się, że masz zainstalowanego Pythona w wersji 3.13 lub wyższej.
 
-Możesz to sprawdzić, uruchamiając poniższe polecenie:
+Wersje pythona możesz sprawdzić, uruchamiając poniższe polecenie:
 
 ```bash
 # Windows/macOS/Linux
