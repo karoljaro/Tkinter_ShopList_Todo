@@ -61,7 +61,7 @@ class TkinterApp:
         self.product_list.pack(pady=5)
 
         self.selected_product_id = None
-        self.product_map = {}  # Słownik do mapowania wyświetlanych wartości na ID produktów
+        self.product_map: dict[str, int] = {}  # Słownik do mapowania wyświetlanych wartości na ID produktów
 
         # Refresh product list on startup
         self.refresh_product_list()

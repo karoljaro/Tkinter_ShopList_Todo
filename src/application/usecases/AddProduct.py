@@ -28,7 +28,7 @@ class AddProduct:
             id=product_dto.id,
             name=product_dto.name,
             quantity=product_dto.quantity,
-            purchased=product_dto.purchased
+            purchased=bool(product_dto.purchased)
         )
         self.__productRepository.add_product(product)
         return product

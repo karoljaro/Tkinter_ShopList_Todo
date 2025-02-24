@@ -32,6 +32,8 @@ Projekt został zaprojektowany z wykorzystaniem architektury warstwowej, co pozw
 ### Struktura plików/folderów całego projektu
 ```
 Tkinter_ShopList_Todo/
+├── assets/
+│   └── icon.ico
 ├── src/
 │   ├── application/
 │   │   ├── dto/
@@ -67,11 +69,13 @@ Tkinter_ShopList_Todo/
 │   │   ├── errorHandlerDecorator.py
 │   │   ├── purchaseStatus.py
 │   │   └── __init__.py
+│   └── __init__.py
 ├── tests/
 │   ├── application/
 │   │   ├── test_AddProduct_usecase.py
 │   │   ├── test_GetAllProduct_usecase.py
 │   │   ├── test_GetProductById_usecase.py
+│   │   ├── test_HandleExceptions_util.py
 │   │   ├── test_ProductDTO_dto.py
 │   │   ├── test_RemoveProduct_usecase.py
 │   │   ├── test_UpdateProduct_usecase.py
@@ -83,14 +87,14 @@ Tkinter_ShopList_Todo/
 │   ├── presentation/
 │   │   └── test_ProductController.py
 │   ├── utils/
-│   │   ├── test_HandleExceptions.py
-│   │   └── test_purchaseStatus.py
+│   │   ├── test_purchaseStatus.py
+│   │   └── __init__.py
 │   └── __init__.py
 ├── .gitignore
 ├── LICENSE
 ├── README.md
 ├── requirements.txt
-└── mypy.ini
+├── mypy.ini
 ```
 
 ### Dlaczego taka architektura?
@@ -117,6 +121,9 @@ python3 --version
 
 Aby stworzyć wirtualne środowisko, uruchom poniższe polecenie:
 
+> [!IMPORTANT] 
+> Upewnij się, że w **Windows** aktywujesz wirtualne środowko za pomocą `cmd`, a nie `PowerShell`, aby uniknąć błędów dotyczących polityki uruchamiania skryptów w PowerShell
+
 ```bash
 # Windows/macOS/Linux
 py -m venv venv
@@ -140,9 +147,9 @@ venv\Scripts\activate
 source venv/bin/activate
 ```
 
-### Instalacja zależności
+### Instalacja dependencies
 
-Aby zainstalować wymagane zależności, uruchom poniższe polecenie:
+Aby zainstalować wymagane dependencies, uruchom poniższe polecenie:
 
 ```bash
 pip install -r requirements.txt
