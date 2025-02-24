@@ -131,9 +131,6 @@ python3 --version
 
 Aby stworzyć wirtualne środowisko, uruchom poniższe polecenie:
 
-> [!IMPORTANT] 
-> Upewnij się, że w **Windows** aktywujesz wirtualne środowko za pomocą `cmd`, a nie `PowerShell`, aby uniknąć błędów dotyczących polityki uruchamiania skryptów w PowerShell
-
 ```bash
 # Windows/macOS/Linux
 py -m venv venv
@@ -147,7 +144,10 @@ python3 -m venv venv
 
 Po utworzeniu wirtualnego środowiska, aktywuj je:
 
+
 #### Windows:
+> [!IMPORTANT] 
+> Upewnij się, że w **Windows** aktywujesz wirtualne środowko za pomocą `cmd`, a nie `PowerShell`, aby uniknąć błędów dotyczących polityki uruchamiania skryptów w PowerShell
 ```bash
 venv\Scripts\activate
 ```
