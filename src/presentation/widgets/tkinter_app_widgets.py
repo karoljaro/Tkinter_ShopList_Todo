@@ -406,7 +406,7 @@ class TkinterApp:
         :param products: List of products to display.
         """
         self.product_list.delete(0, ctk.END)
-        self.product_map.clear()        # Use generator to efficiently process product names
+        self.product_map.clear()  # Use generator to efficiently process product names
         product_names_gen = self.product_controller.get_product_names_generator()
         # Convert generator to list for demonstration (but don't store unused)
         list(product_names_gen)
