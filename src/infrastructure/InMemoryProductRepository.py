@@ -3,10 +3,12 @@ from src.domain.Product_Entity import _Product
 from src.utils.errorHandlerDecorator import handle_exceptions
 from typing import List, Optional
 
+
 class InMemoryProductRepository(IProductRepository):
     """
     In-memory implementation of the IProductRepository interface.
     """
+
     def __init__(self) -> None:
         """
         Initialize the repository with an empty list of products.
@@ -33,7 +35,7 @@ class InMemoryProductRepository(IProductRepository):
         :return: A list of all products.
         """
         return self.__products
-    
+
     @handle_exceptions
     def remove_product(self, product_id: str) -> None:
         """
@@ -45,7 +47,9 @@ class InMemoryProductRepository(IProductRepository):
         product = self.get_product_by_id(product_id)
         if product is None:
             raise ValueError(f"Product with id {product_id} does not exist.")
-        self.__products = [product for product in self.__products if product.id != product_id]
+        self.__products = [
+            product for product in self.__products if product.id != product_id
+        ]
 
     @handle_exceptions
     def get_product_by_id(self, product_id: str) -> Optional[_Product]:

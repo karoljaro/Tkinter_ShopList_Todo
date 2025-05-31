@@ -4,10 +4,12 @@ from src.presentation.controllers.ProductController import ProductController
 from src.infrastructure.JsonProductRepository import JsonProductRepository
 import os
 
+
 class MainApp(ctk.CTk):
     """
     Main application class for the Tkinter-based product management app.
     """
+
     def __init__(self):
         """
         Initialize the MainApp with the necessary components.
@@ -22,11 +24,13 @@ class MainApp(ctk.CTk):
         self.minsize(self.width, self.height)
 
         # Set the application icon
-        icon_path = os.path.join(os.path.dirname(__file__), '../../../assets/icon.ico')
+        icon_path = os.path.join(os.path.dirname(__file__), "../../../assets/icon.ico")
         self.iconbitmap(icon_path)
 
         # Initialize the JSON product repository
-        file_path = os.path.join(os.path.dirname(__file__), '../../infrastructure/data/products.json')
+        file_path = os.path.join(
+            os.path.dirname(__file__), "../../infrastructure/data/products.json"
+        )
         self.product_repository = JsonProductRepository(file_path)
 
         # Initialize the product controller
@@ -47,13 +51,14 @@ class MainApp(ctk.CTk):
         height = self.height
         x = (self.winfo_screenwidth() // 2) - (width // 2)
         y = (self.winfo_screenheight() // 2) - (height // 2)
-        self.geometry(f'{width}x{height}+{int(x)}+{int(y)}')
+        self.geometry(f"{width}x{height}+{int(x)}+{int(y)}")
 
     def run(self):
         """
         Run the Tkinter main loop.
         """
         self.mainloop()
+
 
 if __name__ == "__main__":
     main_app = MainApp()
