@@ -118,3 +118,37 @@ class JsonProductRepository(IProductRepository):
         existing_product.quantity = product.quantity
         existing_product.purchased = product.purchased
         self.__save_products()
+
+    @handle_exceptions
+    def get_products_by_status_generator(self, purchased: bool):
+        """
+        Generator that yields products by purchase status.
+
+        :param purchased: Purchase status to filter by.
+        :yield: Products matching the purchase status.
+        """
+        for product in self.__products:
+            if product.purchased == purchased:
+                yield product
+
+    @handle_exceptions
+    def batch_products_generator(self, batch_size: int = 5):
+        """
+        Generator that yields products in batches.
+
+        :param batch_size: Size of each batch.
+        :yield: Batches of products.
+        """
+        for i in range(0, len(self.__products), batch_size):
+            yield self.__products[i:i + batch_size]
+
+    @handle_exceptions
+    def get_products_with_name_length_range(self, min_length: int, max_length: int) -> list[_Product]:
+        """
+        Get products with name length in specified range using list comprehension.
+
+        :param min_length: Minimum name length.
+        :param max_length: Maximum name length.
+        :return: List of products with names in the specified length range.
+        """
+        return [product for product in self.__products if min_length <= len(product.name) <= max_length]

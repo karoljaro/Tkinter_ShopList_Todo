@@ -17,7 +17,7 @@ class MainApp(ctk.CTk):
 
         # Define window dimensions
         self.width = 640
-        self.height = 600
+        self.height = 800
 
         self.minsize(self.width, self.height)
 

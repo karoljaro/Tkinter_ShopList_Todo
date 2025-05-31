@@ -57,6 +57,66 @@ class ProductController:
         :return: The retrieved product.
         """
         return self.get_product_by_id_use_case.execute(product_id)
+    
+    @handle_exceptions
+    def get_products_by_status(self, purchased: bool | None = None) -> list[_Product]:
+        """
+        Get products filtered by purchase status using list comprehension.
+
+        :param purchased: Filter by purchase status (None for all, True for purchased, False for not purchased).
+        :return: Filtered list of products.
+        """
+        products = self.get_all_products_use_case.execute()
+        if purchased is None:
+            return products
+        return [product for product in products if product.purchased == purchased]
+    
+    @handle_exceptions
+    def get_products_by_quantity_range(self, min_qty: int = 0, max_qty: int | None = None) -> list[_Product]:
+        """
+        Get products within quantity range using list comprehension.
+
+        :param min_qty: Minimum quantity (inclusive).
+        :param max_qty: Maximum quantity (inclusive, None for no limit).
+        :return: List of products within the quantity range.
+        """
+        products = self.get_all_products_use_case.execute()
+        if max_qty is None:
+            return [product for product in products if product.quantity >= min_qty]
+        return [product for product in products if min_qty <= product.quantity <= max_qty]
+    
+    @handle_exceptions
+    def get_product_names_generator(self):
+        """
+        Generator that yields product names one by one.
+
+        :yield: Product names.
+        """
+        products = self.get_all_products_use_case.execute()
+        for product in products:
+            yield product.name
+
+    @handle_exceptions
+    def search_products(self, search_term: str) -> list[_Product]:
+        """
+        Search products by name using list comprehension.
+
+        :param search_term: Term to search for in product names.
+        :return: List of products matching the search term.
+        """
+        products = self.get_all_products_use_case.execute()
+        return [product for product in products if search_term.lower() in product.name.lower()]
+    
+    @handle_exceptions
+    def get_low_stock_products(self, threshold: int = 5) -> list[_Product]:
+        """
+        Get products with low stock using list comprehension.
+
+        :param threshold: Quantity threshold for low stock.
+        :return: List of products with quantity below threshold.
+        """
+        products = self.get_all_products_use_case.execute()
+        return [product for product in products if product.quantity < threshold]
 
     @handle_exceptions
     def remove_product(self, product_id: str) -> None:
