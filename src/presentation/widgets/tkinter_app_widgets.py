@@ -42,6 +42,57 @@ class TkinterApp:
         self.purchased_check = ctk.CTkCheckBox(main_frame, text="Purchased", variable=self.purchased_var)
         self.purchased_check.pack(pady=10)
 
+        # Search and filter frame
+        search_filter_frame = ctk.CTkFrame(main_frame, fg_color="#242424")
+        search_filter_frame.pack(pady=10, fill="x")
+
+        # Search functionality
+        search_label = ctk.CTkLabel(search_filter_frame, text="Search:")
+        search_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        
+        self.search_entry = ctk.CTkEntry(search_filter_frame, width=200, placeholder_text="Search products...")
+        self.search_entry.grid(row=0, column=1, padx=5, pady=5)
+        self.search_entry.bind("<KeyRelease>", self.on_search_change)
+
+        # Filter by status
+        status_label = ctk.CTkLabel(search_filter_frame, text="Filter by Status:")
+        status_label.grid(row=0, column=2, padx=5, pady=5, sticky="w")
+        
+        self.status_filter = ctk.CTkComboBox(search_filter_frame, values=["All", "Purchased", "Not Purchased"], width=120)
+        self.status_filter.grid(row=0, column=3, padx=5, pady=5)
+        self.status_filter.set("All")
+        self.status_filter.configure(command=self.on_filter_change)
+
+        # Quantity range filter
+        qty_label = ctk.CTkLabel(search_filter_frame, text="Min Qty:")
+        qty_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        
+        self.min_qty_entry = ctk.CTkEntry(search_filter_frame, width=80, placeholder_text="0")
+        self.min_qty_entry.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+        self.min_qty_entry.bind("<KeyRelease>", self.on_filter_change)
+
+        max_qty_label = ctk.CTkLabel(search_filter_frame, text="Max Qty:")
+        max_qty_label.grid(row=1, column=2, padx=5, pady=5, sticky="w")
+        
+        self.max_qty_entry = ctk.CTkEntry(search_filter_frame, width=80, placeholder_text="No limit")
+        self.max_qty_entry.grid(row=1, column=3, padx=5, pady=5, sticky="w")
+        self.max_qty_entry.bind("<KeyRelease>", self.on_filter_change)
+
+        # Low stock threshold
+        low_stock_label = ctk.CTkLabel(search_filter_frame, text="Low Stock Threshold:")
+        low_stock_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+        
+        self.low_stock_entry = ctk.CTkEntry(search_filter_frame, width=80, placeholder_text="5")
+        self.low_stock_entry.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+
+        # Clear filters button
+        clear_filters_btn = ctk.CTkButton(search_filter_frame, text="Clear Filters", command=self.clear_filters, width=100)
+        clear_filters_btn.grid(row=2, column=2, padx=5, pady=5)
+
+        # Show low stock button
+        low_stock_btn = ctk.CTkButton(search_filter_frame, text="Show Low Stock", command=self.show_low_stock, width=120)
+        low_stock_btn.grid(row=2, column=3, padx=5, pady=5)
+
         # Create a frame for the buttons
         button_frame = ctk.CTkFrame(main_frame, fg_color="#242424")
         button_frame.pack(pady=10)
@@ -59,9 +110,10 @@ class TkinterApp:
         # Product list
         self.product_list = CTkListbox(main_frame, width=600, height=300, command=self.on_product_select)
         self.product_list.pack(pady=5)
-
+        
         self.selected_product_id = None
         self.product_map: dict[str, int] = {}  # Słownik do mapowania wyświetlanych wartości na ID produktów
+        self.current_filter_mode = "all"  # Track current filter mode for efficient updates
 
         # Refresh product list on startup
         self.refresh_product_list()
@@ -168,20 +220,18 @@ class TkinterApp:
 
     def refresh_product_list(self):
         """
-        Refresh the product list displayed in the UI.
+        Refresh the product list displayed in the UI using all products.
         """
-        self.product_list.delete(0, ctk.END)
-        self.product_map.clear()  # Wyczyść mapowanie
-        products = self.product_controller.get_all_products()
-        for product in products:
-            purchase_status = get_purchase_status(product.purchased)
-            name_display = product.name if len(product.name) <= 40 else product.name[:40] + "..."
-            display_value = f"- Name: {name_display} | Quantity: {product.quantity} | Status: {purchase_status}"
-            self.product_list.insert(ctk.END, display_value)
-            self.product_map[display_value] = product.id  # Mapuj wyświetlaną wartość na ID produktu
-        self.selected_product_id = None
-        self.update_button.configure(state=ctk.DISABLED)
-        self.remove_button.configure(state=ctk.DISABLED)
+        if hasattr(self, 'current_filter_mode') and self.current_filter_mode != "all":
+            # If filters are active, reapply them
+            if self.current_filter_mode == "low_stock":
+                self.show_low_stock()
+            else:
+                self.apply_filters()
+        else:
+            # Show all products
+            products = self.product_controller.get_all_products()
+            self.update_product_display(products)
 
     def clear_inputs(self):
         """
@@ -190,5 +240,138 @@ class TkinterApp:
         self.name_entry.delete(0, ctk.END)
         self.quantity_entry.delete(0, ctk.END)
         self.purchased_var.set(False)
+        self.update_button.configure(state=ctk.DISABLED)
+        self.remove_button.configure(state=ctk.DISABLED)
+
+    def on_search_change(self, event=None):
+        """
+        Handle search input changes and filter products using list comprehensions.
+        
+        :param event: The event triggered by key release (optional).
+        """
+        self.apply_filters()
+
+    def on_filter_change(self, event=None):
+        """
+        Handle filter changes and update product list.
+        
+        :param event: The event triggered by combo box or entry changes (optional).
+        """
+        self.apply_filters()
+
+    def apply_filters(self):
+        """
+        Apply all active filters to the product list using ProductController methods.
+        """
+        # Get search term
+        search_term = self.search_entry.get().strip()
+        
+        # Get status filter
+        status_filter = self.status_filter.get()
+        purchased_filter = None
+        if status_filter == "Purchased":
+            purchased_filter = True
+        elif status_filter == "Not Purchased":
+            purchased_filter = False
+
+        # Get quantity range
+        min_qty = 0
+        max_qty = None
+        
+        try:
+            min_qty_text = self.min_qty_entry.get().strip()
+            if min_qty_text:
+                min_qty = int(min_qty_text)
+        except ValueError:
+            min_qty = 0
+            
+        try:
+            max_qty_text = self.max_qty_entry.get().strip()
+            if max_qty_text:
+                max_qty = int(max_qty_text)
+        except ValueError:
+            max_qty = None
+
+        # Apply filters in sequence using ProductController methods
+        if search_term:
+            # Use search functionality
+            products = self.product_controller.search_products(search_term)
+        else:
+            # Start with status filter
+            products = self.product_controller.get_products_by_status(purchased_filter)
+        
+        # Apply quantity range filter
+        if search_term:
+            # If search was used, apply additional filters manually using list comprehensions
+            if purchased_filter is not None:
+                products = [p for p in products if p.purchased == purchased_filter]
+            if max_qty is not None:
+                products = [p for p in products if min_qty <= p.quantity <= max_qty]
+            else:
+                products = [p for p in products if p.quantity >= min_qty]
+        else:
+            # Use quantity range filter from controller
+            quantity_filtered = self.product_controller.get_products_by_quantity_range(min_qty, max_qty)
+            # Intersect with status filtered products
+            product_ids = {p.id for p in products}
+            products = [p for p in quantity_filtered if p.id in product_ids]
+
+        # Update the display
+        self.update_product_display(products)
+        self.current_filter_mode = "filtered"
+
+    def show_low_stock(self):
+        """
+        Show products with low stock using the ProductController method.
+        """
+        try:
+            threshold_text = self.low_stock_entry.get().strip()
+            threshold = int(threshold_text) if threshold_text else 5
+        except ValueError:
+            threshold = 5
+            
+        low_stock_products = self.product_controller.get_low_stock_products(threshold)
+        self.update_product_display(low_stock_products)
+        self.current_filter_mode = "low_stock"
+
+    def clear_filters(self):
+        """
+        Clear all filters and show all products.
+        """
+        self.search_entry.delete(0, ctk.END)
+        self.status_filter.set("All")
+        self.min_qty_entry.delete(0, ctk.END)
+        self.max_qty_entry.delete(0, ctk.END)
+        self.low_stock_entry.delete(0, ctk.END)
+        self.low_stock_entry.insert(0, "5")  # Reset to default
+        self.current_filter_mode = "all"
+        self.refresh_product_list()
+
+    def update_product_display(self, products):
+        """
+        Update the product list display with filtered products.
+        
+        :param products: List of products to display.
+        """
+        self.product_list.delete(0, ctk.END)
+        self.product_map.clear()
+        
+        # Use generator to efficiently process product names
+        product_names_gen = self.product_controller.get_product_names_generator()
+        all_names = list(product_names_gen)  # Convert generator to list for demonstration
+        
+        for product in products:
+            purchase_status = get_purchase_status(product.purchased)
+            name_display = product.name if len(product.name) <= 40 else product.name[:40] + "..."
+            
+            # Add low stock indicator
+            low_stock_indicator = " ⚠️ LOW STOCK" if product.quantity < 5 else ""
+            display_value = f"- Name: {name_display} | Quantity: {product.quantity} | Status: {purchase_status}{low_stock_indicator}"
+            
+            self.product_list.insert(ctk.END, display_value)
+            self.product_map[display_value] = product.id
+            
+        # Update button states
+        self.selected_product_id = None
         self.update_button.configure(state=ctk.DISABLED)
         self.remove_button.configure(state=ctk.DISABLED)
