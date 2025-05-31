@@ -1,5 +1,4 @@
 from src.application.repositories.IProductRepository import IProductRepository
-from src.domain.Product_Entity import _Product
 
 
 class RemoveProduct:

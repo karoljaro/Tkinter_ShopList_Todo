@@ -1,4 +1,3 @@
-import pytest
 from src.utils.purchaseStatus import get_purchase_status
 
 

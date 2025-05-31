@@ -25,7 +25,7 @@ def test_load_products(product_repository, tmp_path):
     assert len(new_product_repository.get_all_products()) == 1
     assert new_product_repository.get_all_products()[0].name == "Test Product"
     assert new_product_repository.get_all_products()[0].quantity == 10
-    assert new_product_repository.get_all_products()[0].purchased == True
+    assert new_product_repository.get_all_products()[0].purchased is True
 
 
 def test_save_products(product_repository):
@@ -44,7 +44,7 @@ def test_add_product(product_repository):
     assert product_repository.get_product_by_id(product.id) is not None
     assert product_repository.get_product_by_id(product.id).name == "Test Product"
     assert product_repository.get_product_by_id(product.id).quantity == 10
-    assert product_repository.get_product_by_id(product.id).purchased == True
+    assert product_repository.get_product_by_id(product.id).purchased is True
 
 
 def test_add_product_with_existing_id(product_repository):
@@ -71,10 +71,10 @@ def test_get_all_products(product_repository):
     assert len(products) == 2
     assert products[0].name == "Test Product 1"
     assert products[0].quantity == 10
-    assert products[0].purchased == True
+    assert products[0].purchased is True
     assert products[1].name == "Test Product 2"
     assert products[1].quantity == 20
-    assert products[1].purchased == False
+    assert products[1].purchased is False
 
 
 def test_remove_product(product_repository):
@@ -106,7 +106,7 @@ def test_get_product_by_id(product_repository):
     assert retrieved_product is not None
     assert retrieved_product.name == "Test Product"
     assert retrieved_product.quantity == 10
-    assert retrieved_product.purchased == True
+    assert retrieved_product.purchased is True
 
 
 def test_get_product_by_nonexistent_id(product_repository):
@@ -128,7 +128,7 @@ def test_update_product(product_repository):
     assert retrieved_product is not None
     assert retrieved_product.name == "Updated Product"
     assert retrieved_product.quantity == 20
-    assert retrieved_product.purchased == False
+    assert retrieved_product.purchased is False
 
 
 def test_update_nonexistent_product(product_repository):
@@ -183,7 +183,7 @@ def test_batch_products_generator_default_batch_size(product_repository):
     """Test batch generator with default batch size (5)."""
     products = []
     for i in range(7):
-        product = _Product(name=f"Product {i+1}", quantity=10)
+        product = _Product(name=f"Product {i + 1}", quantity=10)
         products.append(product)
         product_repository.add_product(product)
 
@@ -201,7 +201,7 @@ def test_batch_products_generator_custom_batch_size(product_repository):
     """Test batch generator with custom batch size."""
     products = []
     for i in range(6):
-        product = _Product(name=f"Product {i+1}", quantity=10)
+        product = _Product(name=f"Product {i + 1}", quantity=10)
         products.append(product)
         product_repository.add_product(product)
 

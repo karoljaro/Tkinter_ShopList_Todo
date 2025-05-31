@@ -1,5 +1,4 @@
 import pytest
-from typing import List
 from src.utils.list_operations import (
     batch_generator,
     filter_products_by_criteria,

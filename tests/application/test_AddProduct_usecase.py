@@ -59,10 +59,8 @@ def test_add_product_without_purchased(add_product_use_case, product_repository)
     product_dto = ProductDTO(name=name, quantity=quantity)
 
     # Call the use case
-    product = add_product_use_case.execute(product_dto)
-
-    # Verify the product was added with purchased set to False
+    product = add_product_use_case.execute(product_dto)    # Verify the product was added with purchased set to False
     assert product.name == name
     assert product.quantity == quantity
-    assert product.purchased == False
+    assert product.purchased is False
     assert product_repository.get_product_by_id(product.id) is not None
