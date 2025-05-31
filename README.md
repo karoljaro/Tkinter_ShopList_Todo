@@ -1,5 +1,8 @@
 # Tkinter ShopList Todo
 
+![Tests](https://github.com/karoljaro/Tkinter_ShopList_Todo/workflows/Tests/badge.svg)
+![Code Quality](https://github.com/karoljaro/Tkinter_ShopList_Todo/workflows/Code%20Quality/badge.svg)
+
 ## Opis projektu
 
 Celem projektu jest stworzenie aplikacji do zarządzania listą zakupów z wykorzystaniem biblioteki Tkinter. Aplikacja pozwala na dodawanie, edytowanie oraz usuwanie produktów z listy. Użytkownik ma również możliwość zaznaczania produktów jako kupione.
