@@ -2,10 +2,12 @@ from src.application.repositories.IProductRepository import IProductRepository
 from src.domain.Product_Entity import _Product
 from typing import List
 
+
 class GetAllProducts:
     """
     Use case for retrieving all products from the repository.
     """
+
     def __init__(self, productRepository: IProductRepository):
         """
         Initialize the GetAllProducts use case with a product repository.

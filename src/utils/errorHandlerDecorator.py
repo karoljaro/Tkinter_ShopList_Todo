@@ -5,6 +5,7 @@ def handle_exceptions(func):
     :param func: The function to wrap with exception handling.
     :return: The wrapped function.
     """
+
     def wrapper(*args, **kwargs):
         """
         Wrapper function to catch and handle exceptions.
@@ -19,4 +20,5 @@ def handle_exceptions(func):
         except ValueError as err:
             print(f"Error: {err}")
             raise
+
     return wrapper

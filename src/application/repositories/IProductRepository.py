@@ -2,10 +2,12 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 from src.domain.Product_Entity import _Product
 
+
 class IProductRepository(ABC):
     """
     Interface for product repository.
     """
+
     @abstractmethod
     def add_product(self, product: _Product) -> None:
         """

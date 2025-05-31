@@ -5,10 +5,12 @@ from typing import Optional
 import json
 import os
 
+
 class JsonProductRepository(IProductRepository):
     """
     JSON-based implementation of the IProductRepository interface.
     """
+
     def __init__(self, file_path: str) -> None:
         """
         Initialize the repository with the given file path.
@@ -25,7 +27,7 @@ class JsonProductRepository(IProductRepository):
         """
         os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
         if not os.path.exists(self.file_path):
-            with open(self.file_path, 'w') as file:
+            with open(self.file_path, "w") as file:
                 json.dump([], file)
 
     def __load_products(self) -> None:
@@ -38,10 +40,10 @@ class JsonProductRepository(IProductRepository):
                 self.__products = []
                 for data in products_data:
                     product = _Product(
-                        id=data['id'],
-                        name=data['name'],
-                        quantity=data['quantity'],
-                        purchased=data.get('purchased', False)
+                        id=data["id"],
+                        name=data["name"],
+                        quantity=data["quantity"],
+                        purchased=data.get("purchased", False),
                     )
                     self.__products.append(product)
         except FileNotFoundError:
@@ -87,7 +89,9 @@ class JsonProductRepository(IProductRepository):
         product = self.get_product_by_id(product_id)
         if product is None:
             raise ValueError(f"Product with id {product_id} does not exist.")
-        self.__products = [product for product in self.__products if product.id != product_id]
+        self.__products = [
+            product for product in self.__products if product.id != product_id
+        ]
         self.__save_products()
 
     @handle_exceptions
@@ -140,10 +144,12 @@ class JsonProductRepository(IProductRepository):
         :yield: Batches of products.
         """
         for i in range(0, len(self.__products), batch_size):
-            yield self.__products[i:i + batch_size]
+            yield self.__products[i : i + batch_size]
 
     @handle_exceptions
-    def get_products_with_name_length_range(self, min_length: int, max_length: int) -> list[_Product]:
+    def get_products_with_name_length_range(
+        self, min_length: int, max_length: int
+    ) -> list[_Product]:
         """
         Get products with name length in specified range using list comprehension.
 
@@ -151,4 +157,8 @@ class JsonProductRepository(IProductRepository):
         :param max_length: Maximum name length.
         :return: List of products with names in the specified length range.
         """
-        return [product for product in self.__products if min_length <= len(product.name) <= max_length]
+        return [
+            product
+            for product in self.__products
+            if min_length <= len(product.name) <= max_length
+        ]

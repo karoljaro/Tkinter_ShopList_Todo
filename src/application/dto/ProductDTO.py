@@ -1,16 +1,18 @@
 from pydantic import BaseModel, field_validator, Field
 from typing import Optional
 
+
 class ProductDTO(BaseModel):
     """
     Data transfer object for product.
     """
+
     id: Optional[str] = None
     name: str
     quantity: int
     purchased: Optional[bool] = Field(default=False)
 
-    @field_validator('quantity')
+    @field_validator("quantity")
     def quantity_must_be_positive(cls, v):
         """
         Validate that the quantity is a positive integer.
@@ -24,7 +26,7 @@ class ProductDTO(BaseModel):
         if v <= 0:
             raise ValueError("Quantity must be positive")
         return v
-    
+
     @field_validator("name")
     def name_must_not_be_empty(cls, v):
         """
@@ -35,5 +37,5 @@ class ProductDTO(BaseModel):
         :raises ValueError: If the name is empty.
         """
         if not v:
-            raise ValueError('Product name cannot be empty.')
+            raise ValueError("Product name cannot be empty.")
         return v

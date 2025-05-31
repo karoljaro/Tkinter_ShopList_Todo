@@ -1,10 +1,12 @@
 from src.application.repositories.IProductRepository import IProductRepository
 from src.domain.Product_Entity import _Product
 
+
 class GetProductById:
     """
     Use case for retrieving a product by its ID from the repository.
     """
+
     def __init__(self, productRepository: IProductRepository):
         """
         Initialize the GetProductById use case with a product repository.

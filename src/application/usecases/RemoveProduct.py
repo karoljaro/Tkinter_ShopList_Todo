@@ -1,10 +1,12 @@
 from src.application.repositories.IProductRepository import IProductRepository
 from src.domain.Product_Entity import _Product
 
+
 class RemoveProduct:
     """
     Use case for removing a product from the repository.
     """
+
     def __init__(self, productRepository: IProductRepository):
         """
         Initialize the RemoveProduct use case with a product repository.
