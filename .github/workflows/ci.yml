@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  code-quality:
+    if: github.event.pull_request.draft == false || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Python and Dependencies
+      uses: ./.github/actions/setup-deps
+      with:
+        python-version: '3.13'
+        install-linting-tools: 'true'
+
+    - name: Run flake8 (PEP8 style check)
+      run: |
+        flake8 src/ tests/ \
+          --count \
+          --select=E9,F63,F7,F82,F401,F841,E712,E226 \
+          --max-line-length=88 \
+          --ignore=E203,W503 \
+          --show-source \
+          --statistics
+
+    - name: Check code formatting with black
+      run: black --check --diff src/ tests/
+
+    - name: Run mypy type checking
+      continue-on-error: true
+      run: mypy src/ --ignore-missing-imports
+
+  tests:
+    if: github.event.pull_request.draft == false || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    needs: code-quality
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Python and Dependencies
+      uses: ./.github/actions/setup-deps
+      with:
+        python-version: '3.13'
+        install-testing-tools: 'true'
+        install-system-deps: 'true'
+
+    - name: Run tests with virtual display
+      run: xvfb-run -a pytest tests/ -v --tb=short
+
+    - name: Test module imports
+      run: |
+        python -c "from src.domain.Product_Entity import _Product; print('✅ Domain imports OK')"
+        python -c "from src.utils.list_operations import batch_generator; print('✅ Utils imports OK')"
+        python -c "from src.application.usecases.AddProduct import AddProduct; print('✅ UseCase imports OK')"
+        python -c "from src.infrastructure.JsonProductRepository import JsonProductRepository; print('✅ Repository imports OK')"
