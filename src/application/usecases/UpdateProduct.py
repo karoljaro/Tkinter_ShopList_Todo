@@ -24,6 +24,9 @@ class UpdateProduct:
         :return: The updated product.
         :raises ValueError: If no product with the given ID exists or if validation fails.
         """
+        if product_dto.id is None:
+            raise ValueError("Product ID is required for update operation.")
+
         existing_product = self.__productRepository.get_product_by_id(product_dto.id)
         if not existing_product:
             raise ValueError(f"Product with id {product_dto.id} does not exist.")
@@ -31,7 +34,9 @@ class UpdateProduct:
         # Update product fields
         existing_product.name = product_dto.name
         existing_product.quantity = product_dto.quantity
-        existing_product.purchased = product_dto.purchased
+        existing_product.purchased = (
+            product_dto.purchased if product_dto.purchased is not None else False
+        )
 
         # Validate updated product
         if existing_product.quantity <= 0:
