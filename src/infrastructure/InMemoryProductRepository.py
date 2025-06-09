@@ -16,16 +16,18 @@ class InMemoryProductRepository(IProductRepository):
         self.__products: List[_Product] = []
 
     @handle_exceptions
-    def add_product(self, product: _Product) -> None:
+    def add_product(self, product: _Product) -> _Product:
         """
         Add a new product to the repository.
 
         :param product: The product to add.
+        :return: The added product.
         :raises ValueError: If a product with the same ID already exists.
         """
         if self.get_product_by_id(product.id) is not None:
             raise ValueError(f"Product with id {product.id} already exists.")
         self.__products.append(product)
+        return product
 
     @handle_exceptions
     def get_all_products(self) -> List[_Product]:
@@ -65,15 +67,16 @@ class InMemoryProductRepository(IProductRepository):
         return None
 
     @handle_exceptions
-    def update_product(self, product: _Product) -> None:
+    def update_product(self, product: _Product) -> _Product:
         """
         Update an existing product in the repository.
 
         :param product: The product with updated details.
+        :return: The updated product.
         :raises ValueError: If no product with the given ID exists.
         """
         for i, p in enumerate(self.__products):
             if p.id == product.id:
                 self.__products[i] = product
-                return
+                return product
         raise ValueError(f"Product with id {product.id} does not exist.")
