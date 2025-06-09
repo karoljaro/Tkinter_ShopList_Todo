@@ -34,5 +34,4 @@ class AddProduct:
             quantity=product_dto.quantity,
             purchased=bool(product_dto.purchased),
         )
-        self.__productRepository.add_product(product)
-        return product
+        return self.__productRepository.add_product(product)
