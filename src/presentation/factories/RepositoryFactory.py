@@ -14,11 +14,11 @@ def load_env_file():
     """Load environment variables from .env file if it exists."""
     env_path = os.path.join(os.path.dirname(__file__), "../../../.env")
     if os.path.exists(env_path):
-        with open(env_path, 'r') as f:
+        with open(env_path, "r") as f:
             for line in f:
                 line = line.strip()
-                if line and not line.startswith('#') and '=' in line:
-                    key, value = line.split('=', 1)
+                if line and not line.startswith("#") and "=" in line:
+                    key, value = line.split("=", 1)
                     os.environ[key.strip()] = value.strip()
 
 
@@ -99,8 +99,8 @@ class RepositoryFactory:
         if database_service is None:
             database_service = DatabaseService()
 
-        return PostgreSQLProductRepository(database_service)  
-      
+        return PostgreSQLProductRepository(database_service)
+
     @staticmethod
     def create_repository_with_fallback() -> IProductRepository:
         """
@@ -113,20 +113,20 @@ class RepositoryFactory:
         try:
             import psycopg
             from psycopg.rows import dict_row
-            
+
             # 3-second timeout
             test_connection_string = "postgresql://shoplist_user:shoplist_pass@localhost:5432/shoplist?connect_timeout=3"
-            
+
             with psycopg.connect(test_connection_string, row_factory=dict_row) as conn:
                 with conn.cursor() as cursor:
                     cursor.execute("SELECT 1")
                     cursor.fetchone()
-            
+
             # If we got here, PostgreSQL is available
             repo = RepositoryFactory.create_repository(RepositoryType.POSTGRESQL)
             print("✅ Connected to PostgreSQL successfully!")
             return repo
-                
+
         except Exception as e:
             print(f"❌ PostgreSQL unavailable: {type(e).__name__}")
             print("🔄 Falling back to JSON repository...")
@@ -172,8 +172,8 @@ class RepositoryFactory:
             return True
 
         except Exception:
-            return False    
-    
+            return False
+
     @staticmethod
     def get_default_repository() -> IProductRepository:
         """

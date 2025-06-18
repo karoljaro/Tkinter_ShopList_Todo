@@ -1,7 +1,7 @@
 import pytest
 import os
 import shutil
-from unittest.mock import Mock, patch, call
+from unittest.mock import Mock, patch
 from src.presentation.factories.RepositoryFactory import (
     RepositoryFactory,
     RepositoryType,
@@ -29,14 +29,17 @@ class TestRepositoryFactory:
         repository = RepositoryFactory.create_repository(RepositoryType.JSON)
 
         assert isinstance(repository, JsonProductRepository)
-        assert isinstance(repository, IProductRepository)    
+        assert isinstance(repository, IProductRepository)
+
     def test_create_json_repository_custom_path(self):
         """Test creation of JSON repository with custom path."""
         custom_path = "custom/path/products.json"
         config = {"file_path": custom_path}
-        
+
         try:
-            repository = RepositoryFactory.create_repository(RepositoryType.JSON, config)
+            repository = RepositoryFactory.create_repository(
+                RepositoryType.JSON, config
+            )
             assert isinstance(repository, JsonProductRepository)
         finally:
             # Cleanup: Remove the custom folder if it exists
@@ -107,7 +110,9 @@ class TestRepositoryFactory:
         if "REPOSITORY_TYPE" in os.environ:
             del os.environ["REPOSITORY_TYPE"]
 
-        repository = RepositoryFactory.create_repository()        # Should create JSON repository as default
+        repository = (
+            RepositoryFactory.create_repository()
+        )  # Should create JSON repository as default
         assert isinstance(repository, JsonProductRepository)
 
     def test_create_repository_with_fallback_postgresql_success_real(self):
@@ -115,33 +120,42 @@ class TestRepositoryFactory:
         # This test will actually try to connect to PostgreSQL
         # If PostgreSQL is running, it should succeed
         repository = RepositoryFactory.create_repository_with_fallback()
-        
-        # Should get some repository (could be PostgreSQL, JSON, or InMemory depending on environment)
+
+        # Should get some repository (could be PostgreSQL, JSON, or InMemory
+        # depending on environment)
         assert isinstance(repository, IProductRepository)
-        
+
         # Test basic functionality
         all_products = repository.get_all_products()
         assert isinstance(all_products, list)
 
     @patch("psycopg.connect")
-    @patch("builtins.print")  
-    def test_create_repository_with_fallback_postgresql_connection_fails(self, mock_print, mock_psycopg_connect):
+    @patch("builtins.print")
+    def test_create_repository_with_fallback_postgresql_connection_fails(
+        self, mock_print, mock_psycopg_connect
+    ):
         """Test fallback strategy when PostgreSQL connection fails."""
         # Mock PostgreSQL connection failure
         mock_psycopg_connect.side_effect = Exception("DB connection failed")
 
-        repository = RepositoryFactory.create_repository_with_fallback()        # Should fallback to JSON repository (or InMemory if JSON also fails)
-        assert isinstance(repository, (JsonProductRepository, InMemoryProductRepository))
+        repository = (
+            RepositoryFactory.create_repository_with_fallback()
+        )  # Should fallback to JSON repository (or InMemory if JSON also fails)
+        assert isinstance(
+            repository, (JsonProductRepository, InMemoryProductRepository)
+        )
         # Verify PostgreSQL connection was attempted
         mock_psycopg_connect.assert_called_once()
 
     @patch("psycopg.connect")
     @patch("builtins.print")
-    def test_create_repository_with_fallback_all_external_fail(self, mock_print, mock_psycopg_connect):
+    def test_create_repository_with_fallback_all_external_fail(
+        self, mock_print, mock_psycopg_connect
+    ):
         """Test fallback strategy when all external repositories fail."""
         # Mock PostgreSQL connection failure
         mock_psycopg_connect.side_effect = Exception("DB connection failed")
-        
+
         # Since we can't easily mock JSON file failure in this context,
         # we'll just test that the fallback function returns some valid repository
         repository = RepositoryFactory.create_repository_with_fallback()

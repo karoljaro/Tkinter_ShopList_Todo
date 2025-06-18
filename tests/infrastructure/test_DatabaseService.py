@@ -18,7 +18,8 @@ class TestDatabaseService:
             connection_string = db_service._build_connection_string()
 
             expected = (
-                "postgresql://shoplist_user:shoplist_pass@localhost:5432/shoplist?connect_timeout=3"
+                "postgresql://shoplist_user:shoplist_pass@localhost:5432/"
+                "shoplist?connect_timeout=3"
             )
             assert connection_string == expected
 
@@ -36,7 +37,10 @@ class TestDatabaseService:
             db_service = DatabaseService()
             connection_string = db_service._build_connection_string()
 
-            expected = "postgresql://custom_user:custom_pass@custom-host:5433/custom_db?connect_timeout=3"
+            expected = (
+                "postgresql://custom_user:custom_pass@custom-host:5433/"
+                "custom_db?connect_timeout=3"
+            )
             assert connection_string == expected
 
     @patch("src.infrastructure.services.DatabaseService.psycopg")

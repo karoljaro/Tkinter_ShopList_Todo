@@ -149,9 +149,9 @@ class PostgreSQLProductRepository(IProductRepository):
         # Update product
         product_data = self._mapper.to_db_row(product)
         update_sql = """
-        UPDATE products 
-        SET name = %(name)s, 
-            quantity = %(quantity)s, 
+        UPDATE products
+        SET name = %(name)s,
+            quantity = %(quantity)s,
             purchased = %(purchased)s,
             updated_at = CURRENT_TIMESTAMP
         WHERE id = %(id)s

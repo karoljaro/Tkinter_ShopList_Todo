@@ -24,9 +24,9 @@ class MainApp(ctk.CTk):
         icon_path = os.path.join(os.path.dirname(__file__), "../../../assets/icon.ico")
         self.iconbitmap(icon_path)
         self.product_repository = RepositoryFactory.get_default_repository()
-        
+
         print(f"🗄️  Using repository: {type(self.product_repository).__name__}")
-        
+
         repo_type = type(self.product_repository).__name__
         if "PostgreSQL" in repo_type:
             print("✅ PostgreSQL is available and healthy!")
