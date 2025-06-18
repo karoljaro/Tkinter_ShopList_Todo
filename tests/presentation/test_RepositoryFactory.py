@@ -1,5 +1,6 @@
 import pytest
 import os
+import shutil
 from unittest.mock import Mock, patch, call
 from src.presentation.factories.RepositoryFactory import (
     RepositoryFactory,
@@ -28,14 +29,19 @@ class TestRepositoryFactory:
         repository = RepositoryFactory.create_repository(RepositoryType.JSON)
 
         assert isinstance(repository, JsonProductRepository)
-        assert isinstance(repository, IProductRepository)
-
+        assert isinstance(repository, IProductRepository)    
     def test_create_json_repository_custom_path(self):
         """Test creation of JSON repository with custom path."""
-        config = {"file_path": "custom/path/products.json"}
-        repository = RepositoryFactory.create_repository(RepositoryType.JSON, config)
-
-        assert isinstance(repository, JsonProductRepository)
+        custom_path = "custom/path/products.json"
+        config = {"file_path": custom_path}
+        
+        try:
+            repository = RepositoryFactory.create_repository(RepositoryType.JSON, config)
+            assert isinstance(repository, JsonProductRepository)
+        finally:
+            # Cleanup: Remove the custom folder if it exists
+            if os.path.exists("custom"):
+                shutil.rmtree("custom")
 
     @patch("src.presentation.factories.RepositoryFactory.DatabaseService")
     def test_create_postgresql_repository_default_service(self, mock_db_service_class):
