@@ -11,7 +11,7 @@ class DatabaseService:
     Infrastructure service for PostgreSQL database operations.
     Manages connections, transactions, and database schema.
     """
-
+    
     def __init__(self):
         self._connection_string = self._build_connection_string()
 
@@ -23,7 +23,7 @@ class DatabaseService:
         user = os.getenv("POSTGRES_USER", "shoplist_user")
         password = os.getenv("POSTGRES_PASSWORD", "shoplist_pass")
 
-        return f"postgresql://{user}:{password}@{host}:{port}/{database}"
+        return f"postgresql://{user}:{password}@{host}:{port}/{database}?connect_timeout=3"
 
     @contextmanager
     def get_connection(self) -> Iterator[Connection[Dict[str, Any]]]:
