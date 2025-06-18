@@ -1,7 +1,7 @@
 import customtkinter as ctk  # type: ignore
 from src.presentation.widgets.tkinter_app_widgets import TkinterApp
 from src.presentation.controllers.ProductController import ProductController
-from src.infrastructure.JsonProductRepository import JsonProductRepository
+from src.presentation.factories.RepositoryFactory import RepositoryFactory
 import os
 
 
@@ -16,30 +16,29 @@ class MainApp(ctk.CTk):
         """
         super().__init__()
         self.title("Product Management")
-
-        # Define window dimensions
         self.width = 640
         self.height = 800
 
         self.minsize(self.width, self.height)
 
-        # Set the application icon
         icon_path = os.path.join(os.path.dirname(__file__), "../../../assets/icon.ico")
         self.iconbitmap(icon_path)
+        self.product_repository = RepositoryFactory.get_default_repository()
 
-        # Initialize the JSON product repository
-        file_path = os.path.join(
-            os.path.dirname(__file__), "../../infrastructure/data/products.json"
-        )
-        self.product_repository = JsonProductRepository(file_path)
+        print(f"🗄️  Using repository: {type(self.product_repository).__name__}")
 
-        # Initialize the product controller
+        repo_type = type(self.product_repository).__name__
+        if "PostgreSQL" in repo_type:
+            print("✅ PostgreSQL is available and healthy!")
+        elif "Json" in repo_type:
+            print("📄 Using JSON file storage")
+        else:
+            print("💾 Using in-memory storage")
+
         self.product_controller = ProductController(self.product_repository)
 
-        # Initialize the TkinterApp with the root window and product controller
         self.app = TkinterApp(self, self.product_controller)
 
-        # Center the window on the screen
         self.center_window()
 
     def center_window(self):

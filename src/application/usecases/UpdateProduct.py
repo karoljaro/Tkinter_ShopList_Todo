@@ -31,18 +31,14 @@ class UpdateProduct:
         if not existing_product:
             raise ValueError(f"Product with id {product_dto.id} does not exist.")
 
-        # Update product fields
         existing_product.name = product_dto.name
         existing_product.quantity = product_dto.quantity
         existing_product.purchased = (
             product_dto.purchased if product_dto.purchased is not None else False
         )
-
-        # Validate updated product
         if existing_product.quantity <= 0:
             raise ValueError("Quantity must be positive")
         if not existing_product.name:
             raise ValueError("Product name cannot be empty.")
 
-        self.__productRepository.update_product(existing_product)
-        return existing_product
+        return self.__productRepository.update_product(existing_product)

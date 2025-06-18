@@ -2,3 +2,7 @@ mypy
 customtkinter
 pydantic
 pytest
+requests
+types-requests
+psycopg
+psycopg[binary]

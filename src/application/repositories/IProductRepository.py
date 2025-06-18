@@ -9,11 +9,12 @@ class IProductRepository(ABC):
     """
 
     @abstractmethod
-    def add_product(self, product: _Product) -> None:
+    def add_product(self, product: _Product) -> _Product:
         """
         Add a new product to the repository.
 
         :param product: The product to add.
+        :return: The added product.
         """
         pass
 
@@ -46,10 +47,11 @@ class IProductRepository(ABC):
         pass
 
     @abstractmethod
-    def update_product(self, product: _Product) -> None:
+    def update_product(self, product: _Product) -> _Product:
         """
         Update an existing product in the repository.
 
         :param product: The product with updated details.
+        :return: The updated product.
         """
         pass
