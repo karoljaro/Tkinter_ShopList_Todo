@@ -6,3 +6,5 @@ requests
 types-requests
 psycopg
 psycopg[binary]
+black
+flake8
