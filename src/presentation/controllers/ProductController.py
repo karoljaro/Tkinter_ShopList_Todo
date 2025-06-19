@@ -8,6 +8,10 @@ from src.application.dto.ProductDTO import ProductDTO
 from src.utils.errorHandlerDecorator import handle_exceptions
 from src.domain.Product_Entity import _Product
 from src.infrastructure.InMemoryProductRepository import InMemoryProductRepository
+from src.infrastructure.services.ProductNameNormalizationService import (
+    ProductNameNormalizationService,
+)
+from typing import Dict, List, Tuple, Any
 
 
 class ProductController:
@@ -29,6 +33,7 @@ class ProductController:
         self.get_product_by_id_use_case = GetProductById(self.product_repository)
         self.remove_product_use_case = RemoveProduct(self.product_repository)
         self.update_product_use_case = UpdateProduct(self.product_repository)
+        self.name_normalization_service = ProductNameNormalizationService()
 
     @handle_exceptions
     def add_product(
@@ -158,3 +163,103 @@ class ProductController:
             id=id, name=name, quantity=quantity, purchased=purchased
         )
         return self.update_product_use_case.execute(product_dto)
+
+    # AI Name Normalization Methods
+
+    @handle_exceptions
+    def add_product_with_ai(
+        self, name: str, quantity: int, purchased: bool = False
+    ) -> Tuple[_Product, Dict[str, Any]]:
+        """
+        Add product with AI name normalization.
+
+        :param name: Original product name
+        :param quantity: Product quantity
+        :param purchased: Purchase status
+        :return: Tuple of (product, normalization_info)
+        """
+        # Normalize name
+        normalization_info = self.name_normalization_service.normalize_name(name)
+        normalized_name = normalization_info["normalized"]
+
+        # Check for similar products
+        existing_products = self.get_all_products()
+        existing_names = [p.name for p in existing_products]
+        similar_products = self.name_normalization_service.find_similar_products(
+            normalized_name, existing_names
+        )
+        normalization_info["similar_products"] = similar_products
+
+        # Create product with normalized name
+        product = self.add_product(normalized_name, quantity, purchased)
+
+        return product, normalization_info
+
+    @handle_exceptions
+    def normalize_product_name(self, name: str) -> Dict[str, Any]:
+        """
+        Get normalization suggestions for a product name.
+
+        :param name: Product name to normalize
+        :return: Normalization details
+        """
+        return self.name_normalization_service.normalize_name(name)
+
+    @handle_exceptions
+    def find_typo_suggestions(self, word: str) -> List[Tuple[str, float]]:
+        """
+        Find AI suggestions for typo corrections.
+
+        :param word: Word to find suggestions for
+        :return: List of (correction, confidence) tuples
+        """
+        return self.name_normalization_service.find_typo_suggestions(word)
+
+    @handle_exceptions
+    def add_learned_typo(self, typo: str, correct: str):
+        """
+        Add a new typo correction to AI learning.
+
+        :param typo: Incorrect word
+        :param correct: Correct word
+        """
+        self.name_normalization_service.add_learned_typo(typo, correct)
+
+    @handle_exceptions
+    def get_ai_learning_stats(self) -> Dict[str, Any]:
+        """
+        Get statistics about AI learning progress.
+
+        :return: Learning statistics
+        """
+        return self.name_normalization_service.get_learning_stats()
+
+    @handle_exceptions
+    def check_name_for_suggestions(self, name: str) -> Dict[str, Any]:
+        """
+        Check if a product name has potential AI suggestions.
+
+        :param name: Product name to check
+        :return: Analysis with suggestions if any
+        """
+        return self.name_normalization_service.get_word_suggestions_details(name)
+
+    @handle_exceptions
+    def has_potential_typos(self, name: str) -> bool:
+        """
+        Quick check if name has potential typos.
+
+        :param name: Product name to check
+        :return: True if potential typos found
+        """
+        return self.name_normalization_service.has_potential_typos(name)
+
+    @handle_exceptions
+    def get_smart_name_suggestions(self, name: str) -> List[Tuple[str, float, str]]:
+        """
+        Get smart suggestions for entire product name.
+
+        :param name: Product name to get suggestions for
+        :return: List of (suggestion, confidence, reason) tuples
+        """
+        return self.name_normalization_service.find_smart_suggestions(name)
