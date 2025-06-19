@@ -148,6 +148,34 @@ Aplikacja zawiera zaawansowany system normalizacji nazw produktów oparty na ucz
 - **Smart dialogs**: okna wyboru z wieloma sugestiami
 - **Auto-suggest**: automatyczne sugestie przy dodawaniu produktów
 
+### 📝 Przykłady automatycznych poprawek
+
+#### Polskie błędy ortograficzne:
+```
+mlko → mleko          (brakujące litery)
+chlb → chleb         (brakujące litery)
+maslo → masło        (polskie znaki)
+jogrt → jogurt       (skrócone nazwy)
+kielbsa → kiełbasa   (polskie znaki + litery)
+```
+
+#### Inteligentne sugestie (fuzzy matching):
+```
+melk → mleko             (91% pewności)
+chl → chleb             (85% pewności)
+pomid → pomidory        (88% pewności)
+ziemn → ziemniaki       (82% pewności)
+```
+
+#### Użytkownik dodaje własne poprawki:
+```
+Wpisane przez użytkownika:
+"jajk" → "jajka"        (AI zapamiętuje)
+"cebul" → "cebula"      (AI zapamiętuje)
+
+Następnym razem AI automatycznie zaproponuje te poprawki!
+```
+
 ## Instalacja
 
 ### Pobieranie i wypakowywanie projektu
