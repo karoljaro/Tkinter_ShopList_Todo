@@ -1030,16 +1030,16 @@ class TkinterApp:
 
     def add_to_dictionary(self):
         """
-        Add a custom word correction to AI dictionary.
-        """
+        Add a custom word correction to AI dictionary.        """
         import tkinter as tk
         from tkinter import ttk
 
         dialog = tk.Toplevel(self.root)
         dialog.title("🧠 Add to AI Dictionary")
-        dialog.geometry("400x200")
+        dialog.geometry("400x250")  # Increased height for buttons
         dialog.transient(self.root)
         dialog.grab_set()
+        dialog.resizable(False, False)  # Prevent resizing
 
         # Center dialog
         dialog.update_idletasks()
@@ -1064,12 +1064,17 @@ class TkinterApp:
         # Correct field
         ttk.Label(main_frame, text="Correct word:").pack(anchor=tk.W)
         correct_entry = ttk.Entry(main_frame, width=30)
-        correct_entry.pack(fill=tk.X, pady=(5, 15))
-
-        # Pre-fill with current name if available
+        correct_entry.pack(fill=tk.X, pady=(5, 15))        # Pre-fill with current name if available
         current_name = self.name_entry.get()
         if current_name:
             typo_entry.insert(0, current_name)
+
+        # Bind Enter key to add correction
+        def on_enter(event):
+            add_correction()
+        
+        typo_entry.bind('<Return>', on_enter)
+        correct_entry.bind('<Return>', on_enter)
 
         def add_correction():
             typo = typo_entry.get().strip()
@@ -1093,13 +1098,25 @@ class TkinterApp:
                 messagebox.showerror("Error", f"Failed to add correction: {str(e)}")
 
         def cancel():
-            dialog.destroy()
-
-        # Buttons
+            dialog.destroy()        # Buttons
         buttons_frame = ttk.Frame(main_frame)
-        buttons_frame.pack(fill=tk.X, pady=(10, 0))
+        buttons_frame.pack(fill=tk.X, pady=(20, 0))
 
-        ttk.Button(
-            buttons_frame, text="Add to Dictionary", command=add_correction
-        ).pack(side=tk.LEFT, padx=(0, 5))
-        ttk.Button(buttons_frame, text="Cancel", command=cancel).pack(side=tk.LEFT)
+        # Add Dictionary button
+        add_btn = ttk.Button(
+            buttons_frame, 
+            text="✅ Add to Dictionary", 
+            command=add_correction
+        )
+        add_btn.pack(side=tk.LEFT, padx=(0, 10))
+        
+        # Cancel button
+        cancel_btn = ttk.Button(
+            buttons_frame, 
+            text="❌ Cancel", 
+            command=cancel
+        )
+        cancel_btn.pack(side=tk.LEFT)
+        
+        # Focus on first entry
+        typo_entry.focus_set()
