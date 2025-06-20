@@ -16,7 +16,7 @@ class MainApp(ctk.CTk):
         """
         super().__init__()
         self.title("Product Management")
-        self.width = 640
+        self.width = 850
         self.height = 800
 
         self.minsize(self.width, self.height)
